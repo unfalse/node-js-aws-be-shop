@@ -1,14 +1,13 @@
 import 'source-map-support/register';
 
-import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/apiGateway';
+import { APIGatewayProxyHandler } from 'aws-lambda';
+
 import { formatJSONResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
-
-import schema from './schema';
 import { ProductsService } from 'src/services/products';
 import { STATUS_CODES } from '@libs/const';
 
-const getProductById: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
+export const getProductById: APIGatewayProxyHandler = async (event) => {
     try {
         const { productId = '' } = event.pathParameters;
         const service = new ProductsService();
