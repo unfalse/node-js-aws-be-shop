@@ -1,3 +1,4 @@
+const img = "https://images.unsplash.com/photo-1530049625133-46d513586ab7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=334&q=80";
 export const mockProducts = [
   {
     count: 4,
@@ -5,7 +6,7 @@ export const mockProducts = [
     id: "7567ec4b-b10c-48c5-9345-fc73c48a80aa",
     price: 2.4,
     title: "Чайник BOSCH",
-    img: "https://images.unsplash.com/photo-1530049625133-46d513586ab7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=334&q=80"
+    img
   },
   {
     count: 6,
@@ -13,7 +14,7 @@ export const mockProducts = [
     id: "7567ec4b-b10c-48c5-9345-fc73c48a80a0",
     price: 10,
     title: "Чайник VITEK",
-    img: "https://images.unsplash.com/photo-1530049625133-46d513586ab7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=334&q=80"
+    img
   },
   {
     count: 7,
@@ -21,7 +22,7 @@ export const mockProducts = [
     id: "7567ec4b-b10c-48c5-9345-fc73c48a80a2",
     price: 23,
     title: "Чайник TEFAL",
-    img: "https://images.unsplash.com/photo-1530049625133-46d513586ab7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=334&q=80"
+    img
   },
   {
     count: 12,
@@ -29,7 +30,7 @@ export const mockProducts = [
     id: "7567ec4b-b10c-48c5-9345-fc73c48a80a1",
     price: 15,
     title: "Чайник Xiaomi Mi Smart Kettle Pro",
-    img: "https://images.unsplash.com/photo-1530049625133-46d513586ab7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=334&q=80"
+    img
   },
   {
     count: 7,
@@ -37,7 +38,7 @@ export const mockProducts = [
     id: "7567ec4b-b10c-48c5-9345-fc73c48a80a3",
     price: 23,
     title: "Чайник Kitfort",
-    img: "https://images.unsplash.com/photo-1530049625133-46d513586ab7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=334&q=80"
+    img
   },
   {
     count: 8,
@@ -45,7 +46,7 @@ export const mockProducts = [
     id: "7567ec4b-b10c-48c5-9345-fc73348a80a1",
     price: 15,
     title: "Чайник Philips",
-    img: "https://images.unsplash.com/photo-1530049625133-46d513586ab7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=334&q=80"
+    img
   },
   {
     count: 2,
@@ -53,7 +54,7 @@ export const mockProducts = [
     id: "7567ec4b-b10c-48c5-9445-fc73c48a80a2",
     price: 23,
     title: "Чайник REDMOND",
-    img: "https://images.unsplash.com/photo-1530049625133-46d513586ab7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=334&q=80"
+    img
   },
   {
     count: 3,
@@ -61,6 +62,6 @@ export const mockProducts = [
     id: "7567ec4b-b10c-45c5-9345-fc73c48a80a1",
     price: 15,
     title: "Чайник De'Longhi",
-    img: "https://images.unsplash.com/photo-1530049625133-46d513586ab7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=334&q=80"
+    img
   }
 ];
