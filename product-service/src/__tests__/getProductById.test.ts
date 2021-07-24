@@ -4,7 +4,7 @@ import * as mockContext from 'aws-lambda-mock-context';
 import { getProductById } from '../functions/getProductById/handler';
 import { STATUS_CODES } from '../libs/const';
 
-describe('getProductById lambda', () => {
+describe('getProductById handler', () => {
     const ctx = mockContext.default();
     const cb = () => null;
 
