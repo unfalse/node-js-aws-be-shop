@@ -16,7 +16,7 @@ export const getProductsList: APIGatewayProxyHandler = async () => {
     } catch (error) {
         return formatJSONResponse({
             body: `Something bad has happened: ${JSON.stringify(error)}`
-        }, STATUS_CODES.BAD_REQUEST);
+        }, STATUS_CODES.SERVER_ERROR);
     }
 }
 
