@@ -2,6 +2,8 @@ import type { AWS } from '@serverless/typescript';
 
 import { getProductsList, getProductById } from '@functions/index';
 
+import { getDatabaseCredentials } from './variables';
+
 const serverlessConfiguration: AWS = {
   service: 'product-service',
   frameworkVersion: '2',
@@ -20,6 +22,7 @@ const serverlessConfiguration: AWS = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      ...getDatabaseCredentials()
     },
     lambdaHashingVersion: '20201221',
     stage: 'dev',
