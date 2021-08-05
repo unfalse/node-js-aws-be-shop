@@ -6,13 +6,12 @@ import { formatJSONResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
 import { STATUS_CODES } from '@libs/const';
 
-import { connect, getProductById as getProductByIdFromDb } from 'src/services/db';
+import { getProductById as getProductByIdFromDb } from 'src/services/db';
 
 export const getProductById: APIGatewayProxyHandler = async (event) => {
-    const client = await connect();
     try {
         const { productId = '' } = event.pathParameters;
-        const product = await getProductByIdFromDb(client, productId);
+        const product = await getProductByIdFromDb(productId);
         if (product) {
             return formatJSONResponse(product);
         }
@@ -23,8 +22,6 @@ export const getProductById: APIGatewayProxyHandler = async (event) => {
         return formatJSONResponse({
             body: `Something bad has happened: ${JSON.stringify(error)}`
         }, STATUS_CODES.BAD_REQUEST);
-    } finally {
-        client.end();
     }
 }
 
