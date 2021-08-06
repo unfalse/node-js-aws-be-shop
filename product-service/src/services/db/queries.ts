@@ -36,6 +36,7 @@ export const getProductById = async id => {
 export const addProduct = async ({id, title, description, price, img_url}) => {
     const client = await connect();
     try {
+        await client.query('BEGIN');
         await client.query(`
             insert into public.products(id, title, description, price, img_url)
             values ($1, $2, $3, $4, $5)
@@ -44,7 +45,9 @@ export const addProduct = async ({id, title, description, price, img_url}) => {
             insert into public.stocks(product_id, count)
             values ($1, $2)
         `, [id, 1]);
+        await client.query('COMMIT');
     } catch(error) {
+        await client.query('ROLLBACK');
         throw error;
     } finally {
         client.end();
