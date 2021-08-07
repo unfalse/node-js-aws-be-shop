@@ -9,6 +9,12 @@ import { STATUS_CODES } from '@libs/const';
 import { getProductById as getProductByIdFromDb } from 'src/services/db';
 
 export const getProductById: APIGatewayProxyHandler = async (event) => {
+    console.log('getProductById lambda is executing', {
+        method: event.httpMethod,
+        pathParameters: event.pathParameters,
+        body: event.body
+    });
+
     try {
         const { productId = '' } = event.pathParameters;
         const product = await getProductByIdFromDb(productId);
@@ -19,9 +25,7 @@ export const getProductById: APIGatewayProxyHandler = async (event) => {
             body: 'Product not found'
         }, STATUS_CODES.NOT_FOUND);
     } catch (error) {
-        return formatJSONResponse({
-            body: `Something bad has happened: ${JSON.stringify(error)}`
-        }, STATUS_CODES.BAD_REQUEST);
+        throw error;
     }
 }
 

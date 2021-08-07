@@ -1,6 +1,6 @@
 import 'source-map-support/register';
 
-import { APIGatewayProxyEvent, APIGatewayProxyHandler } from 'aws-lambda';
+import { APIGatewayProxyHandler } from 'aws-lambda';
 import { v4 } from 'uuid';
 
 import { formatJSONResponse } from '@libs/apiGateway';
@@ -18,19 +18,53 @@ interface Product {
 }
 
 export const addProduct: APIGatewayProxyHandler = async (event) => {
+    console.log('addProduct lambda is executing', {
+        method: event.httpMethod,
+        pathParameters: event.pathParameters,
+        body: event.body
+    });
+
     try {
-        console.log('event.body = ', event.body);
-        const product: Product = event.body as Product;
+        const product = (event.body as Object) as Product;
         product.id = v4();
-        console.log('product = ', JSON.stringify(product));
         await addProductToDb(product);
         return formatJSONResponse({}, STATUS_CODES.OK);
     } catch (error) {
         console.log('Error at addProduct: ', error);
-        return formatJSONResponse({
-            body: `Something bad has happened: ${JSON.stringify(error)}`
-        }, STATUS_CODES.SERVER_ERROR);
+        throw error;
     }
 }
 
-export const main = middyfy(addProduct);
+export const main = middyfy(addProduct, [{
+        type: "body",
+        parameter: "title",
+        errorMessage: "title is a required field",
+        validationFunction: (title: string) => typeof title === "string" && title.length > 0,
+    },
+    {
+        type: "body",
+        parameter: "price",
+        errorMessage: "price must be non negative integer",
+        validationFunction: (price: number) => typeof price === 'number' && Number.isInteger(price) && price >= 0,
+    },
+    {
+        type: "body",
+        parameter: "description",
+        errorMessage: "description must be string or null",
+        validationFunction: (description: string) => typeof description === 'string' || !description,
+    },
+    {
+        type: "body",
+        parameter: "img_url",
+        errorMessage: "img_url must be string or null",
+        validationFunction: (img_url: string) => typeof img_url === 'string' || !img_url,
+    },
+    {
+        type: "body",
+        parameter: "count",
+        errorMessage: "count must be non-negative integer or null",
+        validationFunction: (count: number) => (
+            typeof count === 'number' && Number.isInteger(count) && count >= 0) ||
+            (count === null || count === undefined),
+    },
+]);

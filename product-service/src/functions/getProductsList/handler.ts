@@ -4,18 +4,20 @@ import { APIGatewayProxyHandler } from 'aws-lambda';
 
 import { formatJSONResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
-import { STATUS_CODES } from '@libs/const';
 
 import { getProductsList as getProductsListFromDb } from 'src/services/db';
 
-export const getProductsList: APIGatewayProxyHandler = async () => {
+export const getProductsList: APIGatewayProxyHandler = async (event) => {
+    console.log('getProductsList lambda is executing', {
+        method: event.httpMethod,
+        pathParameters: event.pathParameters,
+        body: event.body
+    });
     try {
         const products = await getProductsListFromDb();
         return formatJSONResponse(products);
     } catch (error) {
-        return formatJSONResponse({
-            body: `Something bad has happened: ${JSON.stringify(error)}`
-        }, STATUS_CODES.SERVER_ERROR);
+        throw error;
     }
 }
 
