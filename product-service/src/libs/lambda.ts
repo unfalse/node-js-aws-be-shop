@@ -5,7 +5,7 @@ import { errorsHandler } from 'src/middlewares/errors';
 import { validationMiddleware, ValidationRule } from 'src/middlewares/validation';
 
 export const middyfy = 
-  (handler, validationRules: null | ValidationRule[] = null) => 
+  (handler, validationRules: null | ValidationRule[]) => 
     middy(handler)
     .use(middyJsonBodyParser())
     .use(errorsHandler())

@@ -8,7 +8,10 @@ export type ValidationRule = {
 }
 
 export const validationMiddleware = (validationRules: ValidationRule[]) => ({
-    before: async request => {
+    before: async (request, next) => {
+        if (!validationRules) {
+            return next();
+        }
         for(let validationRule of validationRules) {
             const {type, parameter, validationFunction, errorMessage} = validationRule;
             console.log('validationMiddleware 1',[!request.event || !request.event[type], type]);
