@@ -23,8 +23,8 @@ export const getProductById = async id => {
             select id, title, description, price, img_url, s.count 
             from public.products p left join public.stocks s
             on p.id = s.product_id
-            where p.id = ${id}
-        `);
+            where p.id = $1
+        `, [id]);
         return products;
     } catch (error) {
         throw error;
