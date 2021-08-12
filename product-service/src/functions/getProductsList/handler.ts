@@ -13,12 +13,8 @@ export const getProductsList: APIGatewayProxyHandler = async (event) => {
         pathParameters: event.pathParameters,
         body: event.body
     });
-    try {
-        const products = await getProductsListFromDb();
-        return formatJSONResponse(products);
-    } catch (error) {
-        throw error;
-    }
+    const products = await getProductsListFromDb();
+    return formatJSONResponse(products);
 }
 
 export const main = middyfy(getProductsList);

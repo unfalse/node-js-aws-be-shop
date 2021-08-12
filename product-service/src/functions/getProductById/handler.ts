@@ -15,18 +15,15 @@ export const getProductById: APIGatewayProxyHandler = async (event) => {
         body: event.body
     });
 
-    try {
-        const { productId = '' } = event.pathParameters;
-        const product = await getProductByIdFromDb(productId);
-        if (product) {
-            return formatJSONResponse(product);
-        }
-        return formatJSONResponse({
-            body: 'Product not found'
-        }, STATUS_CODES.NOT_FOUND);
-    } catch (error) {
-        throw error;
+    // TODO: remove
+    const { productId = '' } = event.pathParameters;
+    const product = await getProductByIdFromDb(productId);
+    if (product) {
+        return formatJSONResponse(product);
     }
+    return formatJSONResponse({
+        body: 'Product not found'
+    }, STATUS_CODES.NOT_FOUND);
 }
 
 export const main = middyfy(getProductById);

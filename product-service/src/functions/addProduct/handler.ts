@@ -1,7 +1,6 @@
 import 'source-map-support/register';
 
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { v4 } from 'uuid';
 
 import { formatJSONResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
@@ -26,7 +25,6 @@ export const addProduct: APIGatewayProxyHandler = async (event) => {
 
     try {
         const product = (event.body as Object) as Product;
-        product.id = v4();
         await addProductToDb(product);
         return formatJSONResponse({}, STATUS_CODES.OK);
     } catch (error) {

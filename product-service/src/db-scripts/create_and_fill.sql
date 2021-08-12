@@ -1,3 +1,20 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+DROP TABLE IF exists products CASCADE;
+CREATE TABLE products (
+    id UUID primary key default uuid_generate_v4(),
+    title varchar(255) NOT NULL,
+    description varchar(255),
+    price integer,
+    img_url varchar(255)
+);
+
+DROP TABLE IF exists stocks CASCADE;
+CREATE TABLE stocks (
+    product_id UUID,
+    count integer,
+    CONSTRAINT stocks_fk FOREIGN KEY (product_id) REFERENCES public.products(id) on delete cascade
+);
+
 INSERT INTO public.products
 (id, title, description, price, img_url)
 VALUES

@@ -33,14 +33,15 @@ export const getProductById = async id => {
     }
 }
 
-export const addProduct = async ({id, title, description, price, img_url}) => {
+export const addProduct = async ({title, description, price, img_url}) => {
     const client = await connect();
     try {
         await client.query('BEGIN');
-        await client.query(`
+        const {rows:[{id}]} = await client.query(`
             insert into public.products(id, title, description, price, img_url)
-            values ($1, $2, $3, $4, $5)
-        `, [id, title, description, price, img_url]);
+            values (uuid_generate_v4(), $1, $2, $3, $4)
+            returning *
+        `, [title, description, price, img_url]);
         await client.query(`
             insert into public.stocks(product_id, count)
             values ($1, $2)
