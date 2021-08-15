@@ -1,14 +1,18 @@
 import { STATUS_CODES } from '@libs/const';
 
-export const formatJSONResponse = (response: Record<string, unknown> | Array<unknown>, statusCode = STATUS_CODES.OK) => {
-  return {
+export const formatJSONResponse = (...args) => formatResponse.apply(this, args);
+
+export const formatResponse = (
+  response: Record<string, unknown> | Array<unknown> | string,
+  statusCode = STATUS_CODES.OK,
+  formatJSON = true
+) => ({
     statusCode,
-    body: JSON.stringify(response),
     headers: {
       'Access-Control-Allow-Method': '*',
       'Access-Control-Allow-Headers': '*',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true,
     },
-  }
-}
+    body: formatJSON ? JSON.stringify(response) : response
+});

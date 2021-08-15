@@ -7,7 +7,7 @@ import { formatResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
 import { STATUS_CODES, BUCKET } from '@libs/const';
 
-export const importProductsFile: APIGatewayProxyHandler = async (event) => {
+export const importFileParser: APIGatewayProxyHandler = async (event) => {
     console.log('importProductsFile lambda is executing', {
         method: event.httpMethod,
         pathParameters: event.pathParameters,
@@ -28,4 +28,4 @@ export const importProductsFile: APIGatewayProxyHandler = async (event) => {
     return formatResponse(signedURL, STATUS_CODES.OK, false);
 }
 
-export const main = middyfy(importProductsFile);
+export const main = middyfy(importFileParser);

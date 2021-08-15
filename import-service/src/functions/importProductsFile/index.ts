@@ -5,9 +5,16 @@ export const importProductsFile = {
   events: [
     {
       http: {
-        method: 'post',
-        path: '/products',
-        cors: true
+        method: 'get',
+        path: '/import',
+        cors: true,
+        request: {
+          parameters: {
+            querystrings: {
+              name: true
+            }
+          }
+        }
       }
     }
   ]

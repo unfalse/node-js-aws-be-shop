@@ -4,3 +4,5 @@ export const STATUS_CODES = {
   NOT_FOUND: 404,
   SERVER_ERROR: 500
 };
+
+export const BUCKET = 'task5-nodejs-aws';
