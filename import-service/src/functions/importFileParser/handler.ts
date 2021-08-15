@@ -6,7 +6,7 @@ import csvParser from 'csv-parser';
 
 import { formatResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
-import { BUCKET } from '@libs/const';
+import { BUCKET, PARSED, UPLOADED } from '@libs/const';
 
 export const importFileParser = async (event: S3CreateEvent) => {
     console.log('importFileParser lambda is executing', {
@@ -18,7 +18,7 @@ export const importFileParser = async (event: S3CreateEvent) => {
 
     await Promise.all(
         Records.map(rec => 
-            new Promise((resolve, reject) =>
+            new Promise<void>((resolve, reject) =>
                 s3.getObject({
                     Bucket: BUCKET,
                     Key: rec.s3.object.key
@@ -28,12 +28,26 @@ export const importFileParser = async (event: S3CreateEvent) => {
                 .on('data', data => {
                     console.log(data);
                 })
-                .on('end', resolve)
+                .on('end', async () => {
+                    const { key } = rec.s3.object;
+                    if (key !== UPLOADED && key.slice(0, UPLOADED.length) === UPLOADED) {
+                        const fileName = key.slice(UPLOADED.length);
+                        await s3.copyObject({
+                            Bucket: BUCKET,
+                            CopySource: BUCKET + '/' + key,
+                            Key: PARSED + fileName
+                        }).promise();
+                        await s3.deleteObject({
+                            Bucket: BUCKET,
+                            Key: key
+                        }).promise();
+                    }
+                    resolve();
+                })
                 .on('error', reject)
             )
         )
     );
-
     return formatResponse();
 }
 

@@ -1,7 +1,7 @@
 import AWSMock from 'aws-sdk-mock';
 import AWS from 'aws-sdk';
 
-import { BUCKET } from '@libs/const';
+import { BUCKET, EXPIRES, UPLOADED } from '@libs/const';
 import { importProductsFile } from 'src/functions/importProductsFile/handler';
 
 describe('importProductsFile:', () => {
@@ -17,8 +17,8 @@ describe('importProductsFile:', () => {
 
     const params = {
       Bucket: BUCKET,
-      Key: 'uploaded/productsmock.csv',
-      Expires: 60,
+      Key: `${UPLOADED}productsmock.csv`,
+      Expires: EXPIRES,
       ContentType: 'text/csv'
     };
 

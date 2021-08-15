@@ -4,7 +4,7 @@ import AWS from 'aws-sdk';
 
 import { formatResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
-import { STATUS_CODES, BUCKET } from '@libs/const';
+import { STATUS_CODES, BUCKET, EXPIRES, UPLOADED } from '@libs/const';
 
 export const importProductsFile = async (event) => {
     console.log('importProductsFile lambda is executing', {
@@ -20,8 +20,8 @@ export const importProductsFile = async (event) => {
     
     const params = {
         Bucket: BUCKET,
-        Key: 'uploaded/' + name,
-        Expires: 60,
+        Key: UPLOADED + name,
+        Expires: EXPIRES,
         ContentType: 'text/csv'
     };
 
