@@ -1,6 +1,6 @@
 import type { AWS } from '@serverless/typescript';
 
-import { importProductsFile } from '@functions/index';
+import { importProductsFile, importFileParser } from '@functions/index';
 import { BUCKET } from '@libs/const';
 
 const serverlessConfiguration: AWS = {
@@ -31,10 +31,15 @@ const serverlessConfiguration: AWS = {
       role: {
         statements: [
           {
-            'Effect': 'Allow',
-            'Action': 's3:*',
-            'Resource': 'arn:aws:s3:::task5-learn-nodejs-on-aws-cloud/*'
-          }
+            Effect: "Allow",
+            Action: "s3:ListBucket",
+            Resource: [`arn:aws:s3:::${BUCKET}`],
+          },
+          {
+            Effect: "Allow",
+            Action: "s3:*",
+            Resource: [`arn:aws:s3:::${BUCKET}/*`],
+          },
         ]
       }
     }
@@ -51,8 +56,7 @@ const serverlessConfiguration: AWS = {
               {
                 AllowedHeaders: ['*'],
                 AllowedOrigins: ['*'],
-                AllowedMethods: ['GET', 'PUT', 'POST'],
-                MaxAge: '3600',
+                AllowedMethods: ['PUT'],
               }
             ]
           }
@@ -67,7 +71,7 @@ const serverlessConfiguration: AWS = {
       }
     }
   },
-  functions: { importProductsFile },
+  functions: { importProductsFile, importFileParser },
 };
 
 module.exports = serverlessConfiguration;

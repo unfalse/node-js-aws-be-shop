@@ -1,31 +1,40 @@
 import 'source-map-support/register';
 
-import { APIGatewayProxyHandler } from 'aws-lambda';
+import { S3CreateEvent } from 'aws-lambda';
 import AWS from 'aws-sdk';
+import csvParser from 'csv-parser';
 
 import { formatResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
-import { STATUS_CODES, BUCKET } from '@libs/const';
+import { BUCKET } from '@libs/const';
 
-export const importFileParser: APIGatewayProxyHandler = async (event) => {
-    console.log('importProductsFile lambda is executing', {
-        method: event.httpMethod,
-        pathParameters: event.pathParameters,
-        queryStrings: event.queryStringParameters,
-        body: event.body
+export const importFileParser = async (event: S3CreateEvent) => {
+    console.log('importFileParser lambda is executing', {
+        records: event.Records
     });
 
-    const { name } = event.queryStringParameters;
+    const { Records } = event;
     const s3 = new AWS.S3({ region: 'eu-west-1' });
-    const params = {
-        Bucket: BUCKET,
-        Key: 'uploaded/' + name,
-        Expires: 60,
-        ContentType: 'text/csv'
-    };
-    const signedURL = await s3.getSignedUrlPromise('putObject', params);
 
-    return formatResponse(signedURL, STATUS_CODES.OK, false);
+    await Promise.all(
+        Records.map(rec => 
+            new Promise((resolve, reject) =>
+                s3.getObject({
+                    Bucket: BUCKET,
+                    Key: rec.s3.object.key
+                })
+                .createReadStream()
+                .pipe(csvParser())
+                .on('data', data => {
+                    console.log(data);
+                })
+                .on('end', resolve)
+                .on('error', reject)
+            )
+        )
+    );
+
+    return formatResponse();
 }
 
 export const main = middyfy(importFileParser);

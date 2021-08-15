@@ -3,7 +3,7 @@ import { STATUS_CODES } from '@libs/const';
 export const formatJSONResponse = (...args) => formatResponse.apply(this, args);
 
 export const formatResponse = (
-  response: Record<string, unknown> | Array<unknown> | string,
+  response: Record<string, unknown> | Array<unknown> | string = null,
   statusCode = STATUS_CODES.OK,
   formatJSON = true
 ) => ({
