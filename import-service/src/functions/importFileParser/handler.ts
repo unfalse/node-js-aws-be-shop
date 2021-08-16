@@ -30,18 +30,23 @@ export const importFileParser = async (event: S3CreateEvent) => {
                 })
                 .on('end', async () => {
                     const { key } = rec.s3.object;
+                    console.log('key of record: ', key);
                     if (key !== UPLOADED && key.slice(0, UPLOADED.length) === UPLOADED) {
                         const fileName = key.slice(UPLOADED.length);
+                        console.log('fileName: ', fileName);
+                        console.log('copying...');
                         await s3.copyObject({
                             Bucket: BUCKET,
                             CopySource: BUCKET + '/' + key,
                             Key: PARSED + fileName
                         }).promise();
+                        console.log('deleting...');
                         await s3.deleteObject({
                             Bucket: BUCKET,
                             Key: key
                         }).promise();
                     }
+                    console.log('done!');
                     resolve();
                 })
                 .on('error', reject)

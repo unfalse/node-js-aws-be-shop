@@ -1,4 +1,4 @@
-import { BUCKET } from '@libs/const';
+import { BUCKET, UPLOADED } from '@libs/const';
 import { handlerPath } from '@libs/handlerResolver';
 
 export const importFileParser = {
@@ -10,8 +10,7 @@ export const importFileParser = {
         bucket: BUCKET,
         rules: [
           {
-            prefix: 'uploaded/',
-            suffix: 'csv'
+            prefix: UPLOADED
           }
         ],
         existing: true
