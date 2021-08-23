@@ -15,6 +15,7 @@ export const importFileParser = async (event: S3CreateEvent) => {
 
     const { Records } = event;
     const s3 = new AWS.S3({ region: 'eu-west-1' });
+    const sqs = new AWS.SQS();
 
     await Promise.all(
         Records.map(rec => 
@@ -27,6 +28,12 @@ export const importFileParser = async (event: S3CreateEvent) => {
                 .pipe(csvParser())
                 .on('data', data => {
                     console.log(data);
+                    sqs.sendMessage({
+                        QueueUrl: process.env.SQS_QUEUE_URL,
+                        MessageBody: data
+                    }, () => {
+                        console.log('Sent message: ' + data);
+                    });
                 })
                 .on('end', async () => {
                     const { key } = rec.s3.object;

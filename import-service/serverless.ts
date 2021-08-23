@@ -1,6 +1,9 @@
 import type { AWS } from '@serverless/typescript';
 
-import { importProductsFile, importFileParser } from '@functions/index';
+import {
+  importProductsFile,
+  importFileParser
+} from '@functions/index';
 import { BUCKET } from '@libs/const';
 
 const serverlessConfiguration: AWS = {
@@ -12,7 +15,8 @@ const serverlessConfiguration: AWS = {
       webpackConfig: './webpack.config.js',
       includeModules: true,
     },
-    s3BucketName: BUCKET
+    s3BucketName: BUCKET,
+    sqsUrl: '${cf:product-service-${self:provider.stage}.QueueURL}'
   },
   plugins: ['serverless-webpack', 'serverless-dotenv-plugin'],
   provider: {
@@ -22,7 +26,8 @@ const serverlessConfiguration: AWS = {
       minimumCompressionSize: 1024,
     },
     environment: {
-      AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      SQS_QUEUE_URL: '${self:custom.sqsUrl}'
     },
     lambdaHashingVersion: '20201221',
     stage: 'dev',

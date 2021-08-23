@@ -1,6 +1,12 @@
 import type { AWS } from '@serverless/typescript';
 
-import { getProductsList, getProductById, addProduct } from '@functions/index';
+import {
+  getProductsList,
+  getProductById,
+  addProduct,
+  catalogBatchProcess
+} from '@functions/index';
+import { QUEUE } from '@libs/const';
 
 import { getDatabaseCredentials } from './variables';
 
@@ -23,14 +29,79 @@ const serverlessConfiguration: AWS = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      SQS_URL: {
+        'Ref': 'SQSQueue'
+      },
       ...getDatabaseCredentials()
     },
     lambdaHashingVersion: '20201221',
     stage: 'dev',
-    region: 'eu-west-1'
+    region: 'eu-west-1',
+    iam: {
+      role: {
+        statements: [
+          {
+            Effect: 'Allow',
+            Action: 'sqs:*',
+            Resource: {
+              'Fn::GetAtt': [
+                'SQSQueue',
+                'Arn'
+              ]
+            }
+          },
+          {
+            Effect: 'Allow',
+            Action: 'sns:*',
+            Resource: {
+              'Ref': 'SNSTopic'
+            }
+          }
+        ]
+      }
+    }
+  },
+  resources: {
+    Resources: {
+      SQSQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties: {
+          QueueName: QUEUE
+        }
+      },
+      SNSTopic: {
+        Type: 'AWS::SNS::Topic',
+        Properties: {
+          TopicName: 'createProductTopic'
+        }
+      },
+      SNSSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'Iskander_Gubaidullin@epam.com',
+          Protocol: 'email',
+          TopicArn: { 'Ref': 'SNSTopic' }
+        }
+      }
+    },
+    Outputs: {
+      QueueURL: {
+        Value: {
+          'Ref': 'SQSQueue'
+        }
+      },
+      QueueARN: {
+        Value: {
+          "Fn::GetAtt": [
+            "SQSQueue",
+            "Arn"
+          ]
+        }
+      }
+    }
   },
   // import the function via paths
-  functions: { getProductsList, getProductById, addProduct },
+  functions: { getProductsList, getProductById, addProduct, catalogBatchProcess },
 };
 
 module.exports = serverlessConfiguration;
