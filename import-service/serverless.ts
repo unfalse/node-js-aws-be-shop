@@ -16,7 +16,8 @@ const serverlessConfiguration: AWS = {
       includeModules: true,
     },
     s3BucketName: BUCKET,
-    sqsUrl: '${cf:product-service-${self:provider.stage}.QueueURL}'
+    sqsUrl: '${cf:product-service-${self:provider.stage}.QueueURL}',
+    sqsArn: '${cf:product-service-${self:provider.stage}.QueueARN}',
   },
   plugins: ['serverless-webpack', 'serverless-dotenv-plugin'],
   provider: {
@@ -45,6 +46,11 @@ const serverlessConfiguration: AWS = {
             Action: "s3:*",
             Resource: [`arn:aws:s3:::${BUCKET}/*`],
           },
+          {
+            Effect: 'Allow',
+            Action: 'sqs:*',
+            Resource: '${self:custom.sqsArn}',
+          }
         ]
       }
     }

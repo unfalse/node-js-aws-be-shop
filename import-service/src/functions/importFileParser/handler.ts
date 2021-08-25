@@ -27,12 +27,11 @@ export const importFileParser = async (event: S3CreateEvent) => {
                 .createReadStream()
                 .pipe(csvParser())
                 .on('data', data => {
-                    console.log(data);
                     sqs.sendMessage({
                         QueueUrl: process.env.SQS_QUEUE_URL,
-                        MessageBody: data
-                    }, () => {
-                        console.log('Sent message: ' + data);
+                        MessageBody: JSON.stringify(data)
+                    }, (error, sentData) => {
+                        console.log('Sent message: ', {error, sentData, data});
                     });
                 })
                 .on('end', async () => {
