@@ -32,6 +32,9 @@ const serverlessConfiguration: AWS = {
       SQS_URL: {
         'Ref': 'SQSQueue'
       },
+      SNS_TOPIC_ARN: {
+        'Ref': 'SNSTopic'
+      },
       ...getDatabaseCredentials()
     },
     lambdaHashingVersion: '20201221',
