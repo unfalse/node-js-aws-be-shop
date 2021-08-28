@@ -7,7 +7,7 @@ import { middyfy } from '@libs/lambda';
 
 import { addProduct as addProductToDb } from 'src/services/db';
 import { formatJSONResponse } from '@libs/apiGateway';
-
+import { getSNSTopicArn } from 'variables';
 
 export const catalogBatchProcess = async (event: SQSEvent) => {
   console.log('catalogBatchProcess lambda is executing', {
@@ -42,10 +42,17 @@ export const catalogBatchProcess = async (event: SQSEvent) => {
       await sns.publish({
         Subject: 'New product has been added to db',
         Message: `The product has been added to the database: ${product.title}`,
-        TopicArn: process.env.SNS_TOPIC_ARN
-      }).promise();
-
-      console.log('deleting messages!');
+        TopicArn: getSNSTopicArn(),
+        MessageAttributes: {
+          isXiaomi: {
+            DataType: 'String',
+            StringValue: (product.title.indexOf('Xiaomi') > 0).toString()
+          }
+        }
+      },
+      (error, data) => {
+          console.log('sns.publish result: ', { error, data });
+      });
 
       return product;
     }

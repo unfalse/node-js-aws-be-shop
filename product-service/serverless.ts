@@ -81,9 +81,23 @@ const serverlessConfiguration: AWS = {
       SNSSubscription: {
         Type: 'AWS::SNS::Subscription',
         Properties: {
-          Endpoint: 'Iskander_Gubaidullin@epam.com',
+          Endpoint: '${env:PRIMARY_EMAIL}',
           Protocol: 'email',
-          TopicArn: { 'Ref': 'SNSTopic' }
+          TopicArn: { 'Ref': 'SNSTopic' },
+          FilterPolicy: {
+            isXiaomi: ['false']
+          }
+        }
+      },
+      FilteredSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: '${env:ADDITIONAL_EMAIL}',
+          Protocol: 'email',
+          TopicArn: { 'Ref': 'SNSTopic' },
+          FilterPolicy: {
+            isXiaomi: ['true']
+          }
         }
       }
     },
