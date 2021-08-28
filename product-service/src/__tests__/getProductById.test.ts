@@ -24,11 +24,11 @@ describe('getProductById handler', () => {
     it('should return not found if there is no product with given id', async () => {
         const event: Pick<APIGatewayProxyEvent, 'pathParameters'> = {
             pathParameters: {
-              productId: '1'
+                productId: '1'
             }
         };
         const response = (await getProductById(event as APIGatewayProxyEvent, ctx, cb)) as APIGatewayProxyResult;
 
         expect(response.statusCode).toBe(STATUS_CODES.NOT_FOUND);
-  });
+    });
 });

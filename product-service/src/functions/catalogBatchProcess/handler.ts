@@ -1,24 +1,27 @@
 import 'source-map-support/register';
 
 import AWS from 'aws-sdk';
+import { SQSEvent } from 'aws-lambda';
 
 import { middyfy } from '@libs/lambda';
 
 import { addProduct as addProductToDb } from 'src/services/db';
+import { formatJSONResponse } from '@libs/apiGateway';
 
-export const catalogBatchProcess = async (event) => {
+
+export const catalogBatchProcess = async (event: SQSEvent) => {
   console.log('catalogBatchProcess lambda is executing', {
     records: event.Records
   });
 
   const sns = new AWS.SNS({ region: 'eu-west-1' });
-  const sqs = new AWS.SQS();
-  
-  event.Records.map(
-    async ({ body, receiptHandle }) => {
+
+  const addedProducts = event.Records.map(
+    async ({ body, messageId }) => {
       const { title, price, description, img_url } = JSON.parse(body);
-      console.log({ title, price, description, img_url });
-      console.log(Number(price));
+      
+      console.log({messageId, title});
+      
       const product = {
         title,
         price: Number(price),
@@ -28,7 +31,13 @@ export const catalogBatchProcess = async (event) => {
 
       console.log(product);
 
-      await addProductToDb(product);
+      try {
+        await addProductToDb(product);
+      } catch(error) {
+        console.log('addProductToDb fail: ', JSON.stringify(error));
+      }
+
+      console.log(`sending sns.publish (product.title = ${product.title})`);
 
       await sns.publish({
         Subject: 'New product has been added to db',
@@ -38,17 +47,11 @@ export const catalogBatchProcess = async (event) => {
 
       console.log('deleting messages!');
 
-      await sqs.deleteMessage({
-        QueueUrl: process.env.SQS_URL,
-        ReceiptHandle: receiptHandle
-      }, (error, data) => {
-        if (error) {
-          console.log('Error happened while deleting the message: ', error);
-        }
-        console.log('sqs.deleteMessage data: ', data);
-      });
+      return product;
     }
   );
+
+  return formatJSONResponse(addedProducts);
 };
 
-export const main = middyfy(catalogBatchProcess);
+export const main = middyfy(catalogBatchProcess, null, true);
