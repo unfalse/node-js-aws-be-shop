@@ -6,7 +6,6 @@ import { SQSEvent } from 'aws-lambda';
 import { middyfy } from '@libs/lambda';
 
 import { addProduct as addProductToDb } from 'src/services/db';
-import { formatJSONResponse } from '@libs/apiGateway';
 import { getSNSTopicArn } from 'variables';
 
 export const catalogBatchProcess = async (event: SQSEvent) => {
@@ -16,7 +15,7 @@ export const catalogBatchProcess = async (event: SQSEvent) => {
 
   const sns = new AWS.SNS({ region: 'eu-west-1' });
 
-  const addedProducts = event.Records.map(
+  const addedProducts = await Promise.all(event.Records.map(
     async ({ body, messageId }) => {
       const { title, price, description, img_url } = JSON.parse(body);
       
@@ -56,9 +55,9 @@ export const catalogBatchProcess = async (event: SQSEvent) => {
 
       return product;
     }
-  );
+  ));
 
-  return formatJSONResponse(addedProducts);
+  return addedProducts;
 };
 
 export const main = middyfy(catalogBatchProcess, null, true);
