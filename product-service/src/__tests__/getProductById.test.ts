@@ -1,8 +1,18 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+
 import * as mockContext from 'aws-lambda-mock-context';
+import { mockProducts } from 'src/mocks/products';
 
 import { getProductById } from '../functions/getProductById/handler';
 import { STATUS_CODES } from '../libs/const';
+
+jest.mock('../services/db', () => {
+    return {
+        getProductByIdFromDb: jest.fn(async (productId) => {
+            return await Promise.resolve(mockProducts.find(p => p.id === productId));
+        })
+    };
+});
 
 describe('getProductById handler', () => {
     const ctx = mockContext.default();
@@ -27,6 +37,7 @@ describe('getProductById handler', () => {
                 productId: '1'
             }
         };
+
         const response = (await getProductById(event as APIGatewayProxyEvent, ctx, cb)) as APIGatewayProxyResult;
 
         expect(response.statusCode).toBe(STATUS_CODES.NOT_FOUND);

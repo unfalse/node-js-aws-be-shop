@@ -6,7 +6,7 @@ import { formatJSONResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
 import { STATUS_CODES } from '@libs/const';
 
-import { getProductById as getProductByIdFromDb } from 'src/services/db';
+import { getProductByIdFromDb } from 'src/services/db';
 
 export const getProductById: APIGatewayProxyHandler = async (event) => {
     console.log('getProductById lambda is executing', {

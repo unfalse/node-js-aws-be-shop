@@ -4,15 +4,16 @@ export default {
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
   preset: 'ts-jest',
-  roots: ['<rootDir>'],
+//   roots: ['<rootDir>'],
   moduleNameMapper: {
       '@libs/(.*)': '<rootDir>/src/libs/$1',
       'src/(.*)': '<rootDir>/src/$1',
   },
-  moduleFileExtensions: ['js', 'ts'],
-  globals: {
-      'ts-jest': {
-          babelConfig: true,
-      },
-  },
+//   moduleFileExtensions: ['js', 'ts'],
+//   globals: {
+//       'ts-jest': {
+//           babelConfig: true,
+//       },
+//   },
+  testEnvironment: 'node'
 };

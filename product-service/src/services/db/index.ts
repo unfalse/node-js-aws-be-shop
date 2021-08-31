@@ -1,2 +1,2 @@
 export { connect } from './connect';
-export { getProductById, getProductsList, addProduct } from './queries';
+export { getProductByIdFromDb, getProductsListFromDb, addProductToDb } from './queries';

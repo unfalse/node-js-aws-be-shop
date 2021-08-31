@@ -5,8 +5,8 @@ import { SQSEvent } from 'aws-lambda';
 
 import { middyfy } from '@libs/lambda';
 
-import { addProduct as addProductToDb } from 'src/services/db';
-import { getSNSTopicArn } from 'variables';
+import { addProductToDb } from 'src/services/db';
+import { getSNSTopicArn } from '../../../variables';
 
 export const catalogBatchProcess = async (event: SQSEvent) => {
   console.log('catalogBatchProcess lambda is executing', {
