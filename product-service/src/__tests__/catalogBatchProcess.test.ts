@@ -1,10 +1,9 @@
-import AWSMock from 'aws-sdk-mock';
-import AWS from 'aws-sdk';
-
-// import * as mockContext from 'aws-lambda-mock-context';
 import { mockProducts } from 'src/mocks/products';
 
 import { catalogBatchProcess } from '../functions/catalogBatchProcess/handler';
+
+import { Publisher } from '@services/sns';
+import { addProductToDb } from '@services/db';
 
 jest.mock('../services/db', () => {
   return {
@@ -12,14 +11,15 @@ jest.mock('../services/db', () => {
   };
 });
 
-describe('catalogBatchProcess:', () => {
-  it.skip('should process a message from SQS', async () => {
-    AWSMock.setSDKInstance(AWS);
+jest.mock('@services/sns');
 
-    AWSMock.mock('SNS', 'publish', async (operation: string, params: any, callback: Function) => {
-      console.log('SNS', 'publish', 'mock called with parameters: ', {operation, params});
-      callback(null);
-    });
+describe('catalogBatchProcess:', () => {
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('should process a message from SQS', async () => {
 
     await catalogBatchProcess({
       Records: [
@@ -37,8 +37,49 @@ describe('catalogBatchProcess:', () => {
       ]
     });
 
-    expect(true).toBe(true);
+    // @ts-ignore
+    const publisherInstance = Publisher.mock.instances[0];
 
-    AWSMock.restore('SNS');
+    // @ts-ignore
+    expect(addProductToDb.mock.calls[0].length).toBe(1);
+    expect(publisherInstance.publish).toHaveBeenCalled();
   });
+
+  it('should process several messages from SQS', async () => {
+
+    await catalogBatchProcess({
+      Records: [
+        {
+          body: JSON.stringify(mockProducts[0]),
+          messageId: '',
+          messageAttributes: null,
+          attributes: null,
+          awsRegion: '',
+          eventSource: '',
+          eventSourceARN: '',
+          md5OfBody: '',
+          receiptHandle: ''
+        },
+        {
+          body: JSON.stringify(mockProducts[1]),
+          messageId: '',
+          messageAttributes: null,
+          attributes: null,
+          awsRegion: '',
+          eventSource: '',
+          eventSourceARN: '',
+          md5OfBody: '',
+          receiptHandle: ''
+        }
+      ]
+    });
+
+    // @ts-ignore
+    const publisherInstance = Publisher.mock.instances[0];
+
+    // @ts-ignore
+    expect(addProductToDb.mock.calls.length).toBe(2);
+    expect(publisherInstance.publish).toHaveBeenCalledTimes(2);
+  });
+
 });

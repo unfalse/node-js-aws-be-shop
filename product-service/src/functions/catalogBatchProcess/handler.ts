@@ -1,19 +1,17 @@
 import 'source-map-support/register';
 
-import AWS from 'aws-sdk';
 import { SQSEvent } from 'aws-lambda';
 
+import { Publisher } from '@services/sns';
 import { middyfy } from '@libs/lambda';
-
 import { addProductToDb } from 'src/services/db';
-import { getSNSTopicArn } from '../../../variables';
 
 export const catalogBatchProcess = async (event: SQSEvent) => {
   console.log('catalogBatchProcess lambda is executing', {
     records: event.Records
   });
 
-  const sns = new AWS.SNS({ region: 'eu-west-1' });
+  const sns = new Publisher();
 
   const addedProducts = await Promise.all(event.Records.map(
     async ({ body, messageId }) => {
@@ -38,20 +36,7 @@ export const catalogBatchProcess = async (event: SQSEvent) => {
 
       console.log(`sending sns.publish (product.title = ${product.title})`);
 
-      await sns.publish({
-        Subject: 'New product has been added to db',
-        Message: `The product has been added to the database: ${product.title}`,
-        TopicArn: getSNSTopicArn(),
-        MessageAttributes: {
-          isXiaomi: {
-            DataType: 'String',
-            StringValue: (product.title.indexOf('Xiaomi') > 0).toString()
-          }
-        }
-      },
-      (error, data) => {
-          console.log('sns.publish result: ', { error, data });
-      });
+      sns.publish(product);
 
       return product;
     }

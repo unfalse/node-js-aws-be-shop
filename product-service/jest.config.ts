@@ -8,6 +8,7 @@ export default {
   moduleNameMapper: {
       '@libs/(.*)': '<rootDir>/src/libs/$1',
       'src/(.*)': '<rootDir>/src/$1',
+      '@services/(.*)': '<rootDir>/src/services/$1'
   },
 //   moduleFileExtensions: ['js', 'ts'],
 //   globals: {
