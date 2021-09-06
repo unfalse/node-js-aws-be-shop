@@ -6,7 +6,7 @@ import { formatJSONResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
 import { STATUS_CODES } from '@libs/const';
 
-import { addProduct as addProductToDb } from 'src/services/db';
+import { addProductToDb } from 'src/services/db';
 
 interface Product {
     id: string;
