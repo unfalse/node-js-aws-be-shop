@@ -1,6 +1,6 @@
 import { connect } from './connect';
 
-export const getProductsList = async () => {
+export const getProductsListFromDb = async () => {
     const client = await connect();
     try {
         const { rows: products } = await client.query(`
@@ -16,7 +16,7 @@ export const getProductsList = async () => {
     }
 };
 
-export const getProductById = async id => {
+export const getProductByIdFromDb = async id => {
     const client = await connect();
     try {
         const { rows: products } = await client.query(`
@@ -33,7 +33,7 @@ export const getProductById = async id => {
     }
 }
 
-export const addProduct = async ({title, description, price, img_url}) => {
+export const addProductToDb = async ({title, description, price, img_url}) => {
     const client = await connect();
     try {
         await client.query('BEGIN');

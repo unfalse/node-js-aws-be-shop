@@ -5,3 +5,5 @@ export const getDatabaseCredentials = () => ({
     PG_USERNAME: process.env.PG_USERNAME,
     PG_PASSWORD: process.env.PG_PASSWORD
 });
+
+export const getSNSTopicArn = () => process.env.SNS_TOPIC_ARN;

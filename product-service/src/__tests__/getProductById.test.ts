@@ -1,8 +1,18 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+
 import * as mockContext from 'aws-lambda-mock-context';
+import { mockProducts } from 'src/mocks/products';
 
 import { getProductById } from '../functions/getProductById/handler';
 import { STATUS_CODES } from '../libs/const';
+
+jest.mock('../services/db', () => {
+    return {
+        getProductByIdFromDb: jest.fn(async (productId) => {
+            return await Promise.resolve(mockProducts.find(p => p.id === productId));
+        })
+    };
+});
 
 describe('getProductById handler', () => {
     const ctx = mockContext.default();
@@ -24,11 +34,12 @@ describe('getProductById handler', () => {
     it('should return not found if there is no product with given id', async () => {
         const event: Pick<APIGatewayProxyEvent, 'pathParameters'> = {
             pathParameters: {
-              productId: '1'
+                productId: '1'
             }
         };
+
         const response = (await getProductById(event as APIGatewayProxyEvent, ctx, cb)) as APIGatewayProxyResult;
 
         expect(response.statusCode).toBe(STATUS_CODES.NOT_FOUND);
-  });
+    });
 });
