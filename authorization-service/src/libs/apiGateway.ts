@@ -1,1 +1,1 @@
-export { formatJSONResponse } from '../../../shared';
+export { formatJSONResponse, formatResponse } from '../../../shared';

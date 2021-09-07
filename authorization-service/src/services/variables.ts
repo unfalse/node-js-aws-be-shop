@@ -1,0 +1,1 @@
+export const getPasswordFromEnv = (username: string) => process.env[username];
