@@ -14,6 +14,13 @@ export const importProductsFile = {
               name: true
             }
           }
+        },
+        authorizer: {
+          name: 'basicAuthorizer',
+          arn: 'arn:aws:lambda:eu-west-1:030019190562:function:authorization-service-dev-basicAuthorizer',
+          resultTtlInSeconds: 0,
+          identitySource: 'method.request.header.Authorization',
+          type: 'token'
         }
       }
     }

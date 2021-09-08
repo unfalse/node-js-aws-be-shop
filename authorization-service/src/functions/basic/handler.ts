@@ -1,35 +1,39 @@
 import 'source-map-support/register';
 
-import { formatJSONResponse, formatResponse } from '@libs/apiGateway';
 import { middyfy } from '@libs/lambda';
-import { getPasswordFromEnv, generatePolicy } from '@services/index';
+import { getPasswordFromEnv, generatePolicy } from 'src/utils/index';
 
-import { STATUS_CODES } from '../../../../shared';
+import { getCredentialsFromToken, getEffect } from 'src/utils/policy';
 
-const basicAuthorizer = async (event) => {
+const basicAuthorizer = async (event, _context, lambdaCallback) => {
   console.log('basicAuthorizer lambda is executing', {
     event
   });
   
-  if (event['type'] != 'TOKEN') {
-    return formatJSONResponse({}, STATUS_CODES.UNAUTHORIZED);
+  if (event['type'] !== 'TOKEN') {
+    lambdaCallback('Unauthorized');
+    return null;
   }
 
-  const { authorizationToken, methodArn } = event;
-  const [, encodedCreds = ''] = authorizationToken.split(' ');
-  const buff = Buffer.from(encodedCreds, 'base64');
-  const [username = '', password = ''] = buff.toString('utf-8').split(':');
-  
-  console.log({ username, password });
+  try {
+    const { authorizationToken, methodArn } = event;
+    const {encodedCreds='', username='', password=''} = getCredentialsFromToken(authorizationToken);
 
-  const storedUserPassword = getPasswordFromEnv(username);
+    console.log({ username, password });
 
-  console.log({ storedUserPassword });
+    const storedUserPassword = getPasswordFromEnv(username);
 
-  const effect = !storedUserPassword || storedUserPassword !== password ? 'Deny' : 'Allow';
-  const policy = generatePolicy(encodedCreds, methodArn, effect);
-  
-  return formatResponse(policy, effect === 'Allow' ? STATUS_CODES.OK : STATUS_CODES.FORBIDDEN);
+    console.log({ storedUserPassword });
+
+    const effect = getEffect(storedUserPassword, password);
+    const policy = generatePolicy(encodedCreds, methodArn, effect);
+
+    lambdaCallback(null, policy);
+
+    return policy;
+  } catch (error) {
+    lambdaCallback(`Unauthorized due to error: ${error.message}`);
+  }
 }
 
 export const main = middyfy(basicAuthorizer);
