@@ -17,7 +17,7 @@ export const importProductsFile = {
         },
         authorizer: {
           name: 'basicAuthorizer',
-          arn: 'arn:aws:lambda:eu-west-1:030019190562:function:authorization-service-dev-basicAuthorizer',
+          arn: '${self:custom.authorizerLambda}',
           resultTtlInSeconds: 0,
           identitySource: 'method.request.header.Authorization',
           type: 'token'

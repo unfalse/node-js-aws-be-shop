@@ -18,6 +18,9 @@ const serverlessConfiguration: AWS = {
     s3BucketName: BUCKET,
     sqsUrl: '${cf:product-service-${self:provider.stage}.QueueURL}',
     sqsArn: '${cf:product-service-${self:provider.stage}.QueueARN}',
+    authorizerLambda: {
+      'Fn::ImportValue': 'authorization-service-${sls:stage}-AuthorizerLambda'
+    }
   },
   plugins: ['serverless-webpack', 'serverless-dotenv-plugin'],
   provider: {

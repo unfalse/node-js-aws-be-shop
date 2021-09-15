@@ -29,6 +29,23 @@ const serverlessConfiguration: AWS = {
   },
   // import the function via paths
   functions: { basicAuthorizer },
+  resources: {
+    Outputs: {
+      AuthorizerLambda: {
+        Value: {
+          'Fn::GetAtt': [
+            'BasicAuthorizerLambdaFunction',
+            'Arn'
+          ]
+        },
+        Export: {
+          Name: {
+            'Fn::Sub': '${AWS::StackName}-AuthorizerLambda'
+          }
+        }
+      }
+    }
+  }
 };
 
 module.exports = serverlessConfiguration;
