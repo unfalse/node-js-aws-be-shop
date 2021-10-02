@@ -18,6 +18,9 @@ const serverlessConfiguration: AWS = {
     s3BucketName: BUCKET,
     sqsUrl: '${cf:product-service-${self:provider.stage}.QueueURL}',
     sqsArn: '${cf:product-service-${self:provider.stage}.QueueARN}',
+    authorizerLambda: {
+      'Fn::ImportValue': 'authorization-service-${sls:stage}-AuthorizerLambda'
+    }
   },
   plugins: ['serverless-webpack', 'serverless-dotenv-plugin'],
   provider: {
@@ -70,6 +73,19 @@ const serverlessConfiguration: AWS = {
                 AllowedMethods: ['PUT'],
               }
             ]
+          }
+        }
+      },
+      GatewayResponse: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Headers': "'*'"
+          },
+          ResponseType: 'DEFAULT_4XX',
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi'
           }
         }
       }

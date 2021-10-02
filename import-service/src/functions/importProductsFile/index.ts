@@ -14,6 +14,13 @@ export const importProductsFile = {
               name: true
             }
           }
+        },
+        authorizer: {
+          name: 'basicAuthorizer',
+          arn: '${self:custom.authorizerLambda}',
+          resultTtlInSeconds: 0,
+          identitySource: 'method.request.header.Authorization',
+          type: 'token'
         }
       }
     }
