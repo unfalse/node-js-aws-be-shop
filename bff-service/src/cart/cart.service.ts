@@ -1,26 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCartDto } from './dto/create-cart.dto';
-import { UpdateCartDto } from './dto/update-cart.dto';
+import axios from 'axios';
 
 @Injectable()
 export class CartService {
-  create(createCartDto: CreateCartDto) {
-    return 'This action adds a new cart';
+
+  async checkout(body: unknown) {
+    const result = await axios.post(this.getUrl(), body);
+    return result?.data;
   }
 
-  findAll() {
-    return `This action returns all cart`;
+  async findAll() {
+    const result = await axios.get(this.getUrl());
+    return result?.data;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} cart`;
+  async update(body: unknown) {
+    const result = await axios.put(this.getUrl(), body);
+    return result?.data;
   }
 
-  update(id: number, updateCartDto: UpdateCartDto) {
-    return `This action updates a #${id} cart`;
+  async remove(req: unknown) {
+    const result = await axios.delete(this.getUrl(), req);
+    return result?.data;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} cart`;
+  getUrl() {
+    return `${process.env['cart']}`;
   }
 }
