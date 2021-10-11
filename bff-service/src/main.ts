@@ -5,7 +5,7 @@ import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './filters';
 
 config({
-  path: resolve(__dirname, '../.env.eb')
+  path: resolve(__dirname, '../.env'),
 });
 
 async function bootstrap() {

@@ -7,11 +7,16 @@ import { Product } from './entities/product.entity';
 export class ProductService {
   async create(newProduct: Product) {
     console.log('product: create');
-    return await axios.post(this.getUrl(), newProduct);
+    console.log(this.getUrl());
+    const { headers, data, status, statusText } = await axios.post(
+      this.getUrl(),
+      newProduct,
+    );
+    return { headers, data, status, statusText };
   }
 
   getUrl(id?: string) {
-    return `${process.env['product']}${id === undefined ? '' : ('/' + id)}`;
+    return `${process.env['product']}${id === undefined ? '' : '/' + id}`;
   }
 
   async findAll() {
