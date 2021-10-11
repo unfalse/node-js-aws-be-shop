@@ -20,8 +20,8 @@ export class CartController {
     return this.cartService.update(body);
   }
 
-  @Delete(':id')
-  remove(@Req() req: unknown) {
-    return this.cartService.remove(req);
+  @Delete()
+  remove() {
+    return this.cartService.remove();
   }
 }

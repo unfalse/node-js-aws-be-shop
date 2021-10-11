@@ -5,7 +5,7 @@ import axios from 'axios';
 export class CartService {
 
   async checkout(body: unknown) {
-    const result = await axios.post(this.getUrl(), body);
+    const result = await axios.post(`${this.getUrl()}/checkout`, body);
     return result?.data;
   }
 
@@ -19,8 +19,8 @@ export class CartService {
     return result?.data;
   }
 
-  async remove(req: unknown) {
-    const result = await axios.delete(this.getUrl(), req);
+  async remove() {
+    const result = await axios.delete(this.getUrl());
     return result?.data;
   }
 
