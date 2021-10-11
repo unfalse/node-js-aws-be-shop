@@ -12,6 +12,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalFilters(new AllExceptionsFilter());
 
-  await app.listen(3000);
+  console.log('App is listening on port', process.env.PORT);
+  await app.listen(process.env.PORT);
 }
 bootstrap();
