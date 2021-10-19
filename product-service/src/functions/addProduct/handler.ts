@@ -7,14 +7,7 @@ import { middyfy } from '@libs/lambda';
 import { STATUS_CODES } from '@libs/const';
 
 import { addProductToDb } from 'src/services/db';
-
-interface Product {
-    id: string;
-    title: string;
-    description: string;
-    img_url: string;
-    price: number;
-}
+import { Product } from '../../../../shared/types';
 
 export const addProduct: APIGatewayProxyHandler = async (event) => {
     console.log('addProduct lambda is executing', {
